@@ -1,0 +1,54 @@
+type User @model {
+  id: ID!
+  name: String!
+  imageUri: String
+  status: String
+  impMessages: [ID]
+  chatRoomUser: [ChatRoomUser] @connection(keyName: "byUser", fields: ["id"])
+  videoCats: [String]
+}
+
+type ChatRoomUser
+@model
+@key(name: "byUser", fields: ["userID", "chatRoomID"])
+@key(name: "byChatRoom", fields: ["chatRoomID", "userID"]) {
+  id: ID!
+  userID: ID!
+  chatRoomID: ID!
+  isImportant: Boolean!
+  user: User @connection(fields: ["userID"])
+  chatRoom: ChatRoom @connection(fields: ["chatRoomID"])
+}
+
+type ChatRoom @model {
+  id: ID!
+  chatRoomUser: [ChatRoomUser] @connection(keyName: "byChatRoom", fields: ["id"])
+  messages: [Message] @connection(keyName: "byChatRoom", fields: ["id"])
+  lastMessageID: ID!
+  lastMessage: Message @connection(fields: ["lastMessageID"])
+}
+
+type Message @model
+@key(name: "byChatRoom", fields: ["chatRoomID", "createdAt"], queryField: "messagesByChatRoom"){
+  id: ID!
+  createdAt: String!
+  content: String!
+  userID: ID!
+  chatRoomID: ID!
+  isImage: Boolean!
+  isSpam: Boolean
+  videoCats: [String]
+  user: User @connection(fields: ["userID"])
+  chatRoom: ChatRoom @connection(fields: ["chatRoomID"])
+}
+
+type Query {
+    batchGetMessages(ids: [ID]): [Message]
+}
+
+type Subscription {
+  onMessageCreatedByChatRoomID(chatRoomID: ID!): Message @aws_subscribe(mutations: ["createMessage"])
+  onIncomingMessage(chatRoomID: ID!, userID: ID!): Message @aws_subscribe(mutations: ["createMessage"])
+  onChatRoomUserCreatedByUserID(userID: ID!): ChatRoomUser @aws_subscribe(mutations: ["createChatRoomUser"])
+  onUserUpdatedByUserID(id: ID!): User @aws_subscribe(mutations: ["updateUser"])
+}
