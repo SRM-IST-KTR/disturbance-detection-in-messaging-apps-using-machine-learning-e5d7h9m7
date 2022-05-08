@@ -5,7 +5,7 @@ A Fully Deployable React-Native mobile app that seeks to classify incoming messa
 
 1. [React Native](https://reactnative.dev/) - App Dev
 2. [GraphQL](https://graphql.org/) - API Querying
-3. [AWS Ampligy](https://aws.amazon.com/amplify/) - Backend
+3. [AWS Amplify](https://aws.amazon.com/amplify/) - Backend
 4. [Google BERT Algorithm](https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html) - Text Classification
 5. [ResNet 34](https://www.kaggle.com/datasets/pytorch/resnet34) - Image Classification
 
